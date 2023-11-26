@@ -1,4 +1,4 @@
-import { itemKey, itemsByEndingAtKey, itemsByViewsKey } from '$services/keys';
+import { itemKey, itemsByEndingAtKey, itemsByPriceKey, itemsByViewsKey } from '$services/keys';
 import { client } from '$services/redis';
 import type { CreateItemAttrs } from '$services/types';
 import { genId } from '$services/utils';
@@ -45,6 +45,10 @@ export const createItem = async (attrs: CreateItemAttrs, userId: string) => {
         client.zAdd(itemsByEndingAtKey(), {
             value: id,
             score: attrs.endingAt.toMillis()
+        }),
+        client.zAdd(itemsByPriceKey(), {
+            value: id,
+            score: 0
         })   
     ])
     return id;
